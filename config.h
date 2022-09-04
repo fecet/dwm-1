@@ -1,3 +1,4 @@
+
 #include <X11/XF86keysym.h>
 
 static int showsystray                   = 1;         /* 是否显示托盘栏 */
@@ -39,8 +40,8 @@ static const Rule rules[] = {
     { NULL,                  NULL,                "图片查看",        0,            1,           0,        -1 },
     { NULL,                  NULL,                "图片预览",        0,            1,           0,        -1 },
     { NULL,                  NULL,                "crx_",            0,            1,           0,        -1 },
-    {"chrome",               NULL,                 NULL,             1 << 9,       0,           0,        -1 },
-    {"Chromium",             NULL,                 NULL,             1 << 9,       0,           0,        -1 },
+    /* {"chrome",               NULL,                 NULL,             1 << 9,       0,           0,        -1 }, */
+    /* {"Chromium",             NULL,                 NULL,             1 << 9,       0,           0,        -1 }, */
     {"float",                NULL,                 NULL,             0,            1,           0,        -1 },
     {"flameshot",            NULL,                 NULL,             0,            1,           0,        -1 },
 };
@@ -53,6 +54,7 @@ static const Layout layouts[] = {
     { "﩯",  magicgrid },    /* 网格 */
 };
 
+
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 #define MODKEY Mod4Mask
 #define TAGKEYS(KEY, TAG, cmd1, cmd2) \
@@ -60,13 +62,21 @@ static const Layout layouts[] = {
     { MODKEY|ShiftMask,    KEY, tag,        {.ui = 1 << TAG, .v = cmd2} }, \
     { MODKEY|ControlMask,  KEY, toggleview, {.ui = 1 << TAG} }, \
 
+
+static const char *termcmd[] = {"alacritty", NULL};
+static const char *browsercmd[] = {"google-chrome-stable",
+                                   /* "--proxy-server=127.0.0.1:7890", */
+                                   /* "--force-device-scale-factor=1.7",  */
+                                   NULL};
+static const char *screenshotcmd[] = {"xfce4-screenshooter", NULL};
+
 static Key keys[] = {
     /* modifier            key              function          argument */
     { MODKEY,              XK_equal,        togglesystray,    {0} },                     /* super +            |  切换 托盘栏显示状态 */
-
-    { MODKEY,              XK_Tab,          focusstack,       {.i = +1} },               /* super tab          |  本tag内切换聚焦窗口 */
-    { MODKEY,              XK_Up,           focusstack,       {.i = -1} },               /* super up           |  本tag内切换聚焦窗口 */
-    { MODKEY,              XK_Down,         focusstack,       {.i = +1} },               /* super down         |  本tag内切换聚焦窗口 */
+    { MODKEY,              XK_j,          focusstack,       {.i = +1} },               /* super tab          |  本tag内切换聚焦窗口 */
+    { MODKEY,              XK_k,           focusstack,       {.i = -1} },               /* super up           |  本tag内切换聚焦窗口 */
+    /* { MODKEY,              XK_Down,         focusstack,       {.i = +1} },                */
+    /* super down         |  本tag内切换聚焦窗口 */
 
     { MODKEY,              XK_Left,         viewtoleft,       {0} },                     /* super left         |  聚焦到左边的tag */
     { MODKEY,              XK_Right,        viewtoright,      {0} },                     /* super right        |  聚焦到右边的tag */
@@ -75,11 +85,16 @@ static Key keys[] = {
 
     { MODKEY,              XK_a,            toggleoverview,   {0} },                     /* super a            |  显示所有tag 或 跳转到聚焦窗口的tag */
 
-    { MODKEY,              XK_comma,        setmfact,         {.f = -0.05} },            /* super ,            |  缩小主工作区 */
-    { MODKEY,              XK_period,       setmfact,         {.f = +0.05} },            /* super .            |  放大主工作区 */
+    /* { MODKEY,              XK_comma,        setmfact,         {.f = -0.05} },             */
 
-    { MODKEY,              XK_h,            hidewin,          {0} },                     /* super h            |  隐藏 窗口 */
-    { MODKEY|ShiftMask,    XK_h,            restorewin,       {0} },                     /* super shift h      |  取消隐藏 窗口 */
+    /* super ,            |  缩小主工作区 */
+    /* { MODKEY,              XK_period,       setmfact,         {.f = +0.05} },             */
+    /* super .            |  放大主工作区 */
+    {MODKEY, XK_h, setmfact, {.f = -0.05}},
+    {MODKEY, XK_l, setmfact, {.f = +0.05}},
+
+    { MODKEY,              XK_r,            hidewin,          {0} },                     /* super h            |  隐藏 窗口 */
+    { MODKEY|ShiftMask,    XK_r,            restorewin,       {0} },                     /* super shift h      |  取消隐藏 窗口 */
 
     { MODKEY|ShiftMask,    XK_Return,       zoom,             {0} },                     /* super shift enter  |  将当前聚焦窗口置为主窗口 */
 
@@ -87,12 +102,26 @@ static Key keys[] = {
     { MODKEY|ShiftMask,    XK_t,            toggleallfloating,{0} },                     /* super shift t      |  开启/关闭 全部目标的float模式 */
     { MODKEY,              XK_f,            fullscreen,       {0} },                     /* super f            |  开启/关闭 全屏 */
     { MODKEY|ShiftMask,    XK_f,            togglebar,        {0} },                     /* super shift f      |  开启/关闭 状态栏 */
-    { MODKEY,              XK_e,            incnmaster,       {.i = +1} },               /* super e            |  改变主工作区窗口数量 (1 2中切换) */
+    /* { MODKEY,              XK_e,            incnmaster,       {.i = +1} },                */
+    /* super e            |  改变主工作区窗口数量 (1 2中切换) */
 
-    { MODKEY,              XK_b,            focusmon,         {.i = +1} },               /* super b            |  光标移动到另一个显示器 */
-    { MODKEY|ShiftMask,    XK_b,            tagmon,           {.i = +1} },               /* super shift b      |  将聚焦窗口移动到另一个显示器 */
+    {MODKEY | ShiftMask, XK_d, incnmaster, {.i = +1}},
+    {MODKEY | ShiftMask, XK_i, incnmaster, {.i = -1}},
 
-    { MODKEY,              XK_q,            killclient,       {0} },                     /* super q            |  关闭窗口 */
+    {MODKEY, XK_bracketleft, focusmon, {.i = -1}},
+    {MODKEY, XK_bracketright, focusmon, {.i = +1}},
+    {MODKEY | ShiftMask, XK_bracketleft, tagmon, {.i = -1}},
+    {MODKEY | ShiftMask, XK_bracketright, tagmon, {.i = +1}},
+    /* { MODKEY,              XK_b,            focusmon,         {.i = +1} },                */
+    /* super b            |  光标移动到另一个显示器 */
+    /* { MODKEY|ShiftMask,    XK_b,            tagmon,           {.i = +1} },                */
+
+    /* super shift b      |  将聚焦窗口移动到另一个显示器 */
+
+    /* { MODKEY,              XK_q,            killclient,       {0} },                      */
+
+    /* super q            |  关闭窗口 */
+    {MODKEY | ShiftMask, XK_q, killclient, {0}},
     { MODKEY|ControlMask,  XK_F12,          quit,             {0} },                     /* super ctrl f12     |  退出dwm */
 
 	{ MODKEY|ShiftMask,    XK_space,        selectlayout,     {.v = &layouts[1]} },      /* super shift space  |  切换到网格布局 */
@@ -113,21 +142,24 @@ static Key keys[] = {
     { MODKEY|Mod1Mask,     XK_Right,        resizewin,        {.ui = H_EXPAND} },        /* super ctrl right   |  调整窗口 */
 
     /* spawn + SHCMD 执行对应命令 */
-    { MODKEY|ShiftMask,    XK_q,            spawn,            SHCMD("~/scripts/app-starter.sh killw") },
-    { MODKEY,              XK_minus,        spawn,            SHCMD("~/scripts/app-starter.sh fst") },
-    { MODKEY,              XK_Return,       spawn,            SHCMD("~/scripts/app-starter.sh st") },
-    { MODKEY|ShiftMask,    XK_a,            spawn,            SHCMD("~/scripts/app-starter.sh flameshot") },
-    { MODKEY,              XK_d,            spawn,            SHCMD("~/scripts/app-starter.sh rofi") },
-    { MODKEY,              XK_space,        spawn,            SHCMD("~/scripts/app-starter.sh rofi_window") },
-    { MODKEY,              XK_p,            spawn,            SHCMD("~/scripts/app-starter.sh rofi_p") },
-    { MODKEY|ShiftMask,    XK_k,            spawn,            SHCMD("~/scripts/app-starter.sh screenkey") },
-    { MODKEY,              XK_k,            spawn,            SHCMD("~/scripts/app-starter.sh blurlock") },
-    { MODKEY,              XK_F1,           spawn,            SHCMD("~/scripts/app-starter.sh filemanager") },
-    { MODKEY|ShiftMask,    XK_Up,           spawn,            SHCMD("~/scripts/app-starter.sh set_vol up &") },
-    { MODKEY|ShiftMask,    XK_Down,         spawn,            SHCMD("~/scripts/app-starter.sh set_vol down &") },
-    { MODKEY,              XK_j,            spawn,            SHCMD("~/scripts/app-starter.sh robot") },
-    { MODKEY|ShiftMask,    XK_j,            spawn,            SHCMD("~/scripts/app-starter.sh robot onlyclick") },
-    { ShiftMask|ControlMask, XK_c,          spawn,            SHCMD("xclip -o | xclip -selection c") },
+    /* { MODKEY|ShiftMask,    XK_q,            spawn,            SHCMD("~/scripts/app-starter.sh killw") }, */
+    /* { MODKEY,              XK_minus,        spawn,            SHCMD("~/scripts/app-starter.sh fst") }, */
+    /* { MODKEY,              XK_Return,       spawn,            SHCMD("~/scripts/app-starter.sh st") }, */
+    {MODKEY, XK_Return, spawn, {.v = termcmd}},
+    {MODKEY, XK_c, spawn, {.v = browsercmd}},
+    {0, XK_Print, spawn, {.v = screenshotcmd}},
+    /* { MODKEY|ShiftMask,    XK_a,            spawn,            SHCMD("~/scripts/app-starter.sh flameshot") }, */
+    /* { MODKEY,              XK_d,            spawn,            SHCMD("~/scripts/app-starter.sh rofi") }, */
+    /* { MODKEY,              XK_space,        spawn,            SHCMD("~/scripts/app-starter.sh rofi_window") }, */
+    /* { MODKEY,              XK_p,            spawn,            SHCMD("~/scripts/app-starter.sh rofi_p") }, */
+    /* { MODKEY|ShiftMask,    XK_k,            spawn,            SHCMD("~/scripts/app-starter.sh screenkey") }, */
+    /* { MODKEY,              XK_k,            spawn,            SHCMD("~/scripts/app-starter.sh blurlock") }, */
+    /* { MODKEY,              XK_F1,           spawn,            SHCMD("~/scripts/app-starter.sh filemanager") }, */
+    /* { MODKEY|ShiftMask,    XK_Up,           spawn,            SHCMD("~/scripts/app-starter.sh set_vol up &") }, */
+    /* { MODKEY|ShiftMask,    XK_Down,         spawn,            SHCMD("~/scripts/app-starter.sh set_vol down &") }, */
+    /* { MODKEY,              XK_j,            spawn,            SHCMD("~/scripts/app-starter.sh robot") }, */
+    /* { MODKEY|ShiftMask,    XK_j,            spawn,            SHCMD("~/scripts/app-starter.sh robot onlyclick") }, */
+    /* { ShiftMask|ControlMask, XK_c,          spawn,            SHCMD("xclip -o | xclip -selection c") }, */
 
     /* super key : 跳转到对应tag */
     /* super shift key : 将聚焦窗口移动到对应tag */
@@ -142,11 +174,11 @@ static Key keys[] = {
     TAGKEYS(XK_7, 6,  0,  0)
     TAGKEYS(XK_8, 7,  0,  0)
     TAGKEYS(XK_9, 8,  0,  0)
-    TAGKEYS(XK_c, 9,  "~/scripts/app-starter.sh chrome",  "~/scripts/app-starter.sh chrome")
-    TAGKEYS(XK_m, 10, "~/scripts/app-starter.sh music",   "~/scripts/app-starter.sh pavucontrol")
-    TAGKEYS(XK_0, 11, "~/scripts/app-starter.sh tim",     "~/scripts/app-starter.sh tim")
-    TAGKEYS(XK_w, 12, "~/scripts/app-starter.sh wechat",  "~/scripts/app-starter.sh wechat")
-    TAGKEYS(XK_l, 13, "~/scripts/app-starter.sh wxwork",  "~/scripts/app-starter.sh wxwork")
+    /* TAGKEYS(XK_c, 9,  "~/scripts/app-starter.sh chrome",  "~/scripts/app-starter.sh chrome") */
+    /* TAGKEYS(XK_m, 10, "~/scripts/app-starter.sh music",   "~/scripts/app-starter.sh pavucontrol") */
+    /* TAGKEYS(XK_0, 11, "~/scripts/app-starter.sh tim",     "~/scripts/app-starter.sh tim") */
+    /* TAGKEYS(XK_w, 12, "~/scripts/app-starter.sh wechat",  "~/scripts/app-starter.sh wechat") */
+    /* TAGKEYS(XK_l, 13, "~/scripts/app-starter.sh wxwork",  "~/scripts/app-starter.sh wxwork") */
 };
 static Button buttons[] = {
     /* click               event mask       button            function       argument  */
@@ -159,3 +191,4 @@ static Button buttons[] = {
     { ClkClientWin,        MODKEY,          Button3,          resizemouse,   {0} },                                   // super+右键  |  拖拽窗口     |  改变窗口大小
     { ClkTagBar,           MODKEY,          Button1,          tag,           {0} },                                   // super+左键  |  点击tag      |  将窗口移动到对应tag
 };
+

@@ -37,8 +37,8 @@ static const unsigned int alphas[][3] = {
 /* 自定义tag名称 */
 /* 自定义特定实例的显示状态 */
 //            ﮸ 
-static const char *tags[] = {"", "", "", "", "", "",   "",
-                             "", "", "", "", "ﬄ", "﬐", ""};
+static const char *tags[] = {"", "", "", "", "", "", "",
+                             "", "", "", "", "ﬄ",   "﬐", ""};
 static const Rule rules[] = {
     /* class                 instance              title             tags mask
        isfloating   noborder  monitor */
@@ -84,6 +84,8 @@ static const char *browsercmd[] = {"google-chrome-stable",
                                    /* "--force-device-scale-factor=1.7",  */
                                    NULL};
 static const char *screenshotcmd[] = {"xfce4-screenshooter", NULL};
+static const char *notifycenter[] = {
+    "kill", "-s", "USR1", "$(pidof", "deadd-notification-center)", NULL};
 
 static Key keys[] = {
     /* modifier            key              function          argument */
@@ -248,6 +250,7 @@ static Key keys[] = {
        SHCMD("~/scripts/app-starter.sh st") }, */
     {MODKEY, XK_Return, spawn, {.v = termcmd}},
     {MODKEY, XK_c, spawn, {.v = browsercmd}},
+    {MODKEY, XK_n, spawn, SHCMD("~/scripts/notify-center.sh")},
     {0, XK_Print, spawn, {.v = screenshotcmd}},
     /* { MODKEY|ShiftMask,    XK_a,            spawn,
        SHCMD("~/scripts/app-starter.sh flameshot") }, */

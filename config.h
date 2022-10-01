@@ -42,9 +42,9 @@ static const char *tags[] = {"", "", "", "", "", "", "",
 static const Rule rules[] = {
     /* class                 instance              title             tags mask
        isfloating   noborder  monitor */
-    {"netease-cloud-music", NULL, NULL, 1 << 10, 1, 0, -1},
-    {"music", NULL, NULL, 1 << 10, 1, 1, -1},
-    {"lx-music-desktop", NULL, NULL, 1 << 10, 1, 1, -1},
+    /* {"netease-cloud-music", NULL, NULL, 1 << 10, 1, 0, -1}, */
+    /* {"music", NULL, NULL, 1 << 10, 1, 1, -1}, */
+    /* {"lx-music-desktop", NULL, NULL, 1 << 10, 1, 1, -1}, */
     {NULL, "tim.exe", NULL, 1 << 11, 0, 0, -1},
     {NULL, "wechat.exe", NULL, 1 << 12, 0, 0, -1},
     {NULL, "wxwork.exe", NULL, 1 << 13, 0, 0, -1},
@@ -86,6 +86,8 @@ static const char *browsercmd[] = {"google-chrome-stable",
 static const char *screenshotcmd[] = {"xfce4-screenshooter", NULL};
 static const char *notifycenter[] = {
     "kill", "-s", "USR1", "$(pidof", "deadd-notification-center)", NULL};
+
+static const char *music[] = {"/opt/YesPlayMusic/yesplaymusic", NULL};
 
 static Key keys[] = {
     /* modifier            key              function          argument */
@@ -251,6 +253,7 @@ static Key keys[] = {
     {MODKEY, XK_Return, spawn, {.v = termcmd}},
     {MODKEY, XK_c, spawn, {.v = browsercmd}},
     {MODKEY, XK_n, spawn, SHCMD("~/scripts/notify-center.sh")},
+    {MODKEY, XK_m, spawn, {.v = music}},
     {0, XK_Print, spawn, {.v = screenshotcmd}},
     /* { MODKEY|ShiftMask,    XK_a,            spawn,
        SHCMD("~/scripts/app-starter.sh flameshot") }, */
@@ -286,8 +289,9 @@ static Key keys[] = {
             TAGKEYS(XK_7, 6, 0, 0) TAGKEYS(XK_8, 7, 0, 0) TAGKEYS(XK_9, 8, 0, 0)
     /* TAGKEYS(XK_c, 9,  "~/scripts/app-starter.sh chrome",
        "~/scripts/app-starter.sh chrome") */
-    /* TAGKEYS(XK_m, 10, "~/scripts/app-starter.sh music",
-       "~/scripts/app-starter.sh pavucontrol") */
+    /* TAGKEYS(XK_m, 10, "~/scripts/app-starter.sh music", */
+    /*         "~/scripts/app-starter.sh pavucontrol") */
+    /* TAGKEYS(XK_m, 10, 0, 0) */
     /* TAGKEYS(XK_0, 11, "~/scripts/app-starter.sh tim",
        "~/scripts/app-starter.sh tim") */
     /* TAGKEYS(XK_w, 12, "~/scripts/app-starter.sh wechat",

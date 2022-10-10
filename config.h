@@ -43,7 +43,7 @@ static const Rule rules[] = {
     /* class                 instance              title             tags mask
        isfloating   noborder  monitor */
     /* {"netease-cloud-music", NULL, NULL, 1 << 10, 1, 0, -1}, */
-    /* {"music", NULL, NULL, 1 << 10, 1, 1, -1}, */
+    {"music", NULL, NULL, 0, 1, 1, -1},
     /* {"lx-music-desktop", NULL, NULL, 1 << 10, 1, 1, -1}, */
     {NULL, "tim.exe", NULL, 1 << 11, 0, 0, -1},
     {NULL, "wechat.exe", NULL, 1 << 12, 0, 0, -1},
@@ -58,6 +58,8 @@ static const Rule rules[] = {
        0,           0,        -1 }, */
     {"float", NULL, NULL, 0, 1, 0, -1},
     {"flameshot", NULL, NULL, 0, 1, 0, -1},
+    {"Steam", NULL, NULL, 0, 1,1, -1},
+    {"steam_app_292030", NULL, NULL, 0, 0,1,-1}
 };
 static const char *overviewtag = "OVERVIEW";
 static const Layout overviewlayout = {"", overview};

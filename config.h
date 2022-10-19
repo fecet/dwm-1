@@ -58,9 +58,8 @@ static const Rule rules[] = {
        0,           0,        -1 }, */
     {"float", NULL, NULL, 0, 1, 0, -1},
     {"flameshot", NULL, NULL, 0, 1, 0, -1},
-    {"Steam", NULL, NULL, 0, 1,1, -1},
-    {"steam_app_292030", NULL, NULL, 0, 0,1,-1}
-};
+    {"Steam", NULL, NULL, 0, 1, 1, -1},
+    {"steam_app_292030", NULL, NULL, 0, 0, 1, -1}};
 static const char *overviewtag = "OVERVIEW";
 static const Layout overviewlayout = {"", overview};
 
@@ -90,6 +89,8 @@ static const char *notifycenter[] = {
     "kill", "-s", "USR1", "$(pidof", "deadd-notification-center)", NULL};
 
 static const char *music[] = {"/opt/YesPlayMusic/yesplaymusic", NULL};
+
+static const char *editorcmd[] = {"zsh", "--login", "/home/rok/scripts/start_neovide.sh", NULL};
 
 static Key keys[] = {
     /* modifier            key              function          argument */
@@ -256,6 +257,7 @@ static Key keys[] = {
     {MODKEY, XK_c, spawn, {.v = browsercmd}},
     {MODKEY, XK_n, spawn, SHCMD("~/scripts/notify-center.sh")},
     {MODKEY, XK_m, spawn, {.v = music}},
+    {MODKEY, XK_i, spawn, {.v = editorcmd}},
     {0, XK_Print, spawn, {.v = screenshotcmd}},
     /* { MODKEY|ShiftMask,    XK_a,            spawn,
        SHCMD("~/scripts/app-starter.sh flameshot") }, */

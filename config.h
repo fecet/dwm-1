@@ -37,13 +37,14 @@ static const unsigned int alphas[][3] = {
 /* 自定义tag名称 */
 /* 自定义特定实例的显示状态 */
 //            ﮸ 
-static const char *tags[] = {"", "", "", "", "", "", "",
-                             "", "", "", "", "ﬄ",   "﬐", ""};
+static const char *tags[] = {"", "", "", "", "", "",   "",
+                             "", "", "", "", "ﬄ", "﬐", ""};
 static const Rule rules[] = {
     /* class                 instance              title             tags mask
        isfloating   noborder  monitor */
     /* {"netease-cloud-music", NULL, NULL, 1 << 10, 1, 0, -1}, */
     {"music", NULL, NULL, 0, 1, 1, -1},
+    {"listen1", NULL, NULL, 0, 1, 1, -1},
     /* {"lx-music-desktop", NULL, NULL, 1 << 10, 1, 1, -1}, */
     {NULL, "tim.exe", NULL, 1 << 11, 0, 0, -1},
     {NULL, "wechat.exe", NULL, 1 << 12, 0, 0, -1},
@@ -88,9 +89,15 @@ static const char *screenshotcmd[] = {"xfce4-screenshooter", NULL};
 static const char *notifycenter[] = {
     "kill", "-s", "USR1", "$(pidof", "deadd-notification-center)", NULL};
 
-static const char *music[] = {"/opt/YesPlayMusic/yesplaymusic", NULL};
+/* static const char *music[] = {"/opt/YesPlayMusic/yesplaymusic", NULL}; */
+/* static const char *music[] = {"/opt/Listen1/listen1", "%U", NULL}; */
+static const char *music[] = {
+    "google-chrome-stable",
+    "chrome-extension://npjapjnfoejopmnlljoaociichngopgf/listen1.html",
+    "--new-window", NULL};
 
-static const char *editorcmd[] = {"zsh", "--login", "/home/rok/scripts/start_neovide.sh", NULL};
+static const char *editorcmd[] = {"zsh", "--login",
+                                  "/home/rok/scripts/start_neovide.sh", NULL};
 
 static Key keys[] = {
     /* modifier            key              function          argument */
@@ -249,8 +256,7 @@ static Key keys[] = {
     /* spawn + SHCMD 执行对应命令 */
     /* { MODKEY|ShiftMask,    XK_q,            spawn,
        SHCMD("~/scripts/app-starter.sh killw") }, */
-    /* { MODKEY,              XK_minus,        spawn,
-       SHCMD("~/scripts/app-starter.sh fst") }, */
+    {MODKEY, XK_apostrophe, spawn, SHCMD("~/scripts/floatterm.sh")},
     /* { MODKEY,              XK_Return,       spawn,
        SHCMD("~/scripts/app-starter.sh st") }, */
     {MODKEY, XK_Return, spawn, {.v = termcmd}},

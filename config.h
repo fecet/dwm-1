@@ -337,6 +337,24 @@ static Button buttons[] = {
      Button3,
      togglewin,
      {0}}, // 右键        |  点击标题     |  切换窗口显示状态
+    {ClkStatusText,
+     0,
+     Button1,
+     clickstatusbar,
+     {0}}, // 左键        |  点击状态栏   |  根据状态栏的信号执行
+           // ~/scripts/dwmstatusbar.sh $signal L
+    {ClkStatusText,
+     0,
+     Button2,
+     clickstatusbar,
+     {0}}, // 中键        |  点击状态栏   |  根据状态栏的信号执行
+           // ~/scripts/dwmstatusbar.sh $signal M
+    {ClkStatusText,
+     0,
+     Button3,
+     clickstatusbar,
+     {0}}, // 右键        |  点击状态栏   |  根据状态栏的信号执行
+           // ~/scripts/dwmstatusbar.sh $signal R
     {ClkTagBar, 0, Button1, view, {0}}, // 左键        |  点击tag      | 切换tag
     {ClkTagBar,
      0,

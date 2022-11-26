@@ -109,6 +109,9 @@ static const char *editorcmd[] = {"zsh", "--login",
 
 static Key keys[] = {
     /* modifier            key              function          argument */
+    {0, XF86XK_AudioLowerVolume, spawn, SHCMD("~/scripts/vol-down.sh")},
+    {0, XF86XK_AudioMute, spawn, SHCMD("~/scripts/vol-toggle.sh")},
+    {0, XF86XK_AudioRaiseVolume, spawn, SHCMD("~/scripts/vol-up.sh")},
     {MODKEY,
      XK_equal,
      togglesystray,

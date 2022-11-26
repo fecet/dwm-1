@@ -1,36 +1,42 @@
 #include <X11/XF86keysym.h>
 
-static int showsystray                   = 1;         /* 是否显示托盘栏 */
-static const int newclientathead         = 0;         /* 定义新窗口在栈顶还是栈底 */
-static const unsigned int borderpx       = 2;         /* 窗口边框大小 */
-static const unsigned int systraypinning = 1;         /* 托盘跟随的显示器 0代表不指定显示器 */
-static const unsigned int systrayspacing = 1;         /* 托盘间距 */
-static int gappi                         = 12;        /* 窗口与窗口 缝隙大小 */
-static int gappo                         = 12;        /* 窗口与边缘 缝隙大小 */
-static const int _gappo                  = 12;        /* 窗口与窗口 缝隙大小 不可变 用于恢复时的默认值 */
-static const int _gappi                  = 12;        /* 窗口与边缘 缝隙大小 不可变 用于恢复时的默认值 */
-static const int overviewgappi           = 24;        /* overview时 窗口与边缘 缝隙大小 */
-static const int overviewgappo           = 60;        /* overview时 窗口与窗口 缝隙大小 */
-static const int showbar                 = 1;         /* 是否显示状态栏 */
-static const int topbar                  = 1;         /* 指定状态栏位置 0底部 1顶部 */
-static const float mfact                 = 0.6;       /* 主工作区 大小比例 */
-static const int   nmaster               = 1;         /* 主工作区 窗口数量 */
-static const unsigned int snap           = 10;        /* 边缘依附宽度 */
-static const unsigned int baralpha       = 0xc0;      /* 状态栏透明度 */
-static const unsigned int borderalpha    = 0xdd;      /* 边框透明度 */
-static const char *fonts[]               = { "JetBrainsMono Nerd Font:style=medium:size=13", "monospace:size=13" };
-static const char *colors[][3]           = {          /* 颜色设置 ColFg, ColBg, ColBorder */ 
-    [SchemeNorm] = { "#bbbbbb", "#333333", "#444444" },
-    [SchemeSel] = { "#ffffff", "#37474F", "#42A5F5" },
-    [SchemeSelGlobal] = { "#ffffff", "#37474F", "#FFC0CB" },
-    [SchemeHid] = { "#dddddd", NULL, NULL },
-    [SchemeSystray] = { NULL, "#7799AA", NULL },
-    [SchemeUnderline] = { "#7799AA", NULL, NULL }, 
+static int showsystray = 1;           /* 是否显示托盘栏 */
+static const int newclientathead = 0; /* 定义新窗口在栈顶还是栈底 */
+static const unsigned int borderpx = 2; /* 窗口边框大小 */
+static const unsigned int systraypinning =
+    1; /* 托盘跟随的显示器 0代表不指定显示器 */
+static const unsigned int systrayspacing = 1; /* 托盘间距 */
+static int gappi = 12;                        /* 窗口与窗口 缝隙大小 */
+static int gappo = 12;                        /* 窗口与边缘 缝隙大小 */
+static const int _gappo =
+    12; /* 窗口与窗口 缝隙大小 不可变 用于恢复时的默认值 */
+static const int _gappi =
+    12; /* 窗口与边缘 缝隙大小 不可变 用于恢复时的默认值 */
+static const int overviewgappi = 24; /* overview时 窗口与边缘 缝隙大小 */
+static const int overviewgappo = 60; /* overview时 窗口与窗口 缝隙大小 */
+static const int showbar = 1;        /* 是否显示状态栏 */
+static const int topbar = 1;         /* 指定状态栏位置 0底部 1顶部 */
+static const float mfact = 0.6;      /* 主工作区 大小比例 */
+static const int nmaster = 1;        /* 主工作区 窗口数量 */
+static const unsigned int snap = 10;          /* 边缘依附宽度 */
+static const unsigned int baralpha = 0xc0;    /* 状态栏透明度 */
+static const unsigned int borderalpha = 0xdd; /* 边框透明度 */
+static const char *fonts[] = {"JetBrainsMono Nerd Font:style=medium:size=13",
+                              "monospace:size=13"};
+static const char *colors[][3] = {
+    /* 颜色设置 ColFg, ColBg, ColBorder */
+    [SchemeNorm] = {"#bbbbbb", "#333333", "#444444"},
+    [SchemeSel] = {"#ffffff", "#37474F", "#42A5F5"},
+    [SchemeSelGlobal] = {"#ffffff", "#37474F", "#FFC0CB"},
+    [SchemeHid] = {"#dddddd", NULL, NULL},
+    [SchemeSystray] = {NULL, "#7799AA", NULL},
+    [SchemeUnderline] = {"#7799AA", NULL, NULL},
 };
-static const unsigned int alphas[][3]    = {          /* 透明度设置 ColFg, ColBg, ColBorder */ 
-    [SchemeNorm] = { OPAQUE, baralpha, borderalpha }, 
-    [SchemeSel] = { OPAQUE, baralpha, borderalpha },
-    [SchemeSelGlobal] = { OPAQUE, baralpha, borderalpha },
+static const unsigned int alphas[][3] = {
+    /* 透明度设置 ColFg, ColBg, ColBorder */
+    [SchemeNorm] = {OPAQUE, baralpha, borderalpha},
+    [SchemeSel] = {OPAQUE, baralpha, borderalpha},
+    [SchemeSelGlobal] = {OPAQUE, baralpha, borderalpha},
 };
 
 /* 自定义脚本位置 */
@@ -44,26 +50,25 @@ static const char *tags[] = {"", "", "", "", "", "",   "",
                              "", "", "", "", "ﬄ", "﬐", ""};
 static const Rule rules[] = {
     /* class                 instance              title             tags mask
-       isfloating   noborder  monitor */
-    /* {"netease-cloud-music", NULL, NULL, 1 << 10, 1, 0, -1}, */
-    {"music", NULL, NULL, 0, 1, 1, -1},
-    {"listen1", NULL, NULL, 0, 1, 1, -1},
-    /* {"lx-music-desktop", NULL, NULL, 1 << 10, 1, 1, -1}, */
-    {NULL, "tim.exe", NULL, 1 << 11, 0, 0, -1},
-    {NULL, "wechat.exe", NULL, 1 << 12, 0, 0, -1},
-    {NULL, "wxwork.exe", NULL, 1 << 13, 0, 0, -1},
-    {NULL, NULL, "broken", 0, 1, 0, -1},
-    {NULL, NULL, "图片查看", 0, 1, 0, -1},
-    {NULL, NULL, "图片预览", 0, 1, 0, -1},
-    {NULL, NULL, "crx_", 0, 1, 0, -1},
+       isfloating  isglobal    isnoborder monitor */
+    {"music", NULL, NULL, 0, 1, 0, 1, -1},
+    {"listen1", NULL, NULL, 0, 1, 0, 1, -1},
+    {NULL, "icalingua", NULL, 1 << 11, 0, 0, 1, -1},
+    {NULL, "wechat.exe", NULL, 1 << 12, 0, 0, 0, -1},
+    {NULL, "wxwork.exe", NULL, 1 << 13, 0, 0, 0, -1},
+    {NULL, NULL, "broken", 0, 1, 0, 0, -1},
+    {NULL, NULL, "图片查看", 0, 1, 0, 0, -1},
+    {NULL, NULL, "图片预览", 0, 1, 0, 0, -1},
+    {NULL, NULL, "crx_", 0, 1, 0, 0, -1},
     /* {"chrome",               NULL,                 NULL,             1 << 9,
-       0,           0,        -1 }, */
+       0,          0,          0,        -1 }, */
     /* {"Chromium",             NULL,                 NULL,             1 << 9,
-       0,           0,        -1 }, */
-    {"float", NULL, NULL, 0, 1, 0, -1},
-    {"flameshot", NULL, NULL, 0, 1, 0, -1},
-    {"Steam", NULL, NULL, 0, 1, 1, -1},
-    {"steam_app_292030", NULL, NULL, 0, 0, 1, -1}};
+       0,          0,          0,        -1 }, */
+    {"flameshot", NULL, NULL, 0, 1, 0, 0, -1},
+    {"float", NULL, NULL, 0, 1, 0, 0, -1},    // 特殊class client默认浮动
+    {"noborder", NULL, NULL, 0, 1, 0, 1, -1}, // 特殊class client默认无边框
+    {"global", NULL, NULL, 255, 1, 1, 0, -1}, // 特殊class client全局于所有tag
+};
 static const char *overviewtag = "OVERVIEW";
 static const Layout overviewlayout = {"", overview};
 
@@ -265,9 +270,10 @@ static Key keys[] = {
     {MODKEY, XK_Return, spawn, {.v = termcmd}},
     {MODKEY, XK_c, spawn, {.v = browsercmd}},
     {MODKEY, XK_n, spawn, SHCMD("~/scripts/notify-center.sh")},
+    /* {MODKEY, XK_t, spawn, SHCMD("~/scripts/trans.sh")}, */
     {MODKEY, XK_m, spawn, {.v = music}},
     {MODKEY, XK_i, spawn, {.v = editorcmd}},
-    {0, XK_Print, spawn, {.v = screenshotcmd}},
+    {0, XK_Print, spawn, SHCMD("flameshot gui -c -p ~/Pictures/screenshots")},
     /* { MODKEY|ShiftMask,    XK_a,            spawn,
        SHCMD("~/scripts/app-starter.sh flameshot") }, */
     /* { MODKEY,              XK_d,            spawn,

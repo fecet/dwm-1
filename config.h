@@ -1,76 +1,81 @@
 #include <X11/XF86keysym.h>
 
-static int showsystray = 1;           /* 是否显示托盘栏 */
-static const int newclientathead = 0; /* 定义新窗口在栈顶还是栈底 */
-static const unsigned int borderpx = 2; /* 窗口边框大小 */
-static const unsigned int systraypinning =
-    1; /* 托盘跟随的显示器 0代表不指定显示器 */
-static const unsigned int systrayspacing = 1; /* 托盘间距 */
-static int gappi = 12;                        /* 窗口与窗口 缝隙大小 */
-static int gappo = 12;                        /* 窗口与边缘 缝隙大小 */
-static const int _gappo =
-    12; /* 窗口与窗口 缝隙大小 不可变 用于恢复时的默认值 */
-static const int _gappi =
-    12; /* 窗口与边缘 缝隙大小 不可变 用于恢复时的默认值 */
-static const int overviewgappi = 24; /* overview时 窗口与边缘 缝隙大小 */
-static const int overviewgappo = 60; /* overview时 窗口与窗口 缝隙大小 */
-static const int showbar = 1;        /* 是否显示状态栏 */
-static const int topbar = 1;         /* 指定状态栏位置 0底部 1顶部 */
-static const float mfact = 0.6;      /* 主工作区 大小比例 */
-static const int nmaster = 1;        /* 主工作区 窗口数量 */
-static const unsigned int snap = 10;          /* 边缘依附宽度 */
-static const unsigned int baralpha = 0xc0;    /* 状态栏透明度 */
-static const unsigned int borderalpha = 0xdd; /* 边框透明度 */
-static const char *fonts[] = {"JetBrainsMono Nerd Font:style=medium:size=13",
-                              "monospace:size=13"};
-static const char *colors[][3] = {
-    /* 颜色设置 ColFg, ColBg, ColBorder */
-    [SchemeNorm] = {"#bbbbbb", "#333333", "#444444"},
-    [SchemeSel] = {"#ffffff", "#37474F", "#42A5F5"},
-    [SchemeSelGlobal] = {"#ffffff", "#37474F", "#FFC0CB"},
-    [SchemeHid] = {"#dddddd", NULL, NULL},
-    [SchemeSystray] = {NULL, "#7799AA", NULL},
-    [SchemeUnderline] = {"#7799AA", NULL, NULL},
+static int showsystray                   = 1;         /* 是否显示托盘栏 */
+static const int newclientathead         = 0;         /* 定义新窗口在栈顶还是栈底 */
+static const unsigned int borderpx       = 2;         /* 窗口边框大小 */
+static const unsigned int systraypinning = 1;         /* 托盘跟随的显示器 0代表不指定显示器 */
+static const unsigned int systrayspacing = 1;         /* 托盘间距 */
+static const unsigned int systrayspadding = 5;        /* 托盘和状态栏的间隙 */
+static int gappi                         = 12;        /* 窗口与窗口 缝隙大小 */
+static int gappo                         = 12;        /* 窗口与边缘 缝隙大小 */
+static const int _gappo                  = 12;        /* 窗口与窗口 缝隙大小 不可变 用于恢复时的默认值 */
+static const int _gappi                  = 12;        /* 窗口与边缘 缝隙大小 不可变 用于恢复时的默认值 */
+static const int vertpad                 = 5;         /* vertical padding of bar */
+static const int sidepad                 = 5;         /* horizontal padding of bar */
+static const int overviewgappi           = 24;        /* overview时 窗口与边缘 缝隙大小 */
+static const int overviewgappo           = 60;        /* overview时 窗口与窗口 缝隙大小 */
+static const int showbar                 = 1;         /* 是否显示状态栏 */
+static const int topbar                  = 1;         /* 指定状态栏位置 0底部 1顶部 */
+static const float mfact                 = 0.6;       /* 主工作区 大小比例 */
+static const int   nmaster               = 1;         /* 主工作区 窗口数量 */
+static const unsigned int snap           = 10;        /* 边缘依附宽度 */
+static const unsigned int baralpha       = 0xc0;      /* 状态栏透明度 */
+static const unsigned int borderalpha    = 0xdd;      /* 边框透明度 */
+static const char *fonts[]               = { "JetBrainsMono Nerd Font:style=medium:size=13", "monospace:size=13" };
+static const char *colors[][3]           = {          /* 颜色设置 ColFg, ColBg, ColBorder */ 
+    [SchemeNorm] = { "#bbbbbb", "#333333", "#444444" },
+    [SchemeSel] = { "#ffffff", "#37474F", "#42A5F5" },
+    [SchemeSelGlobal] = { "#ffffff", "#37474F", "#FFC0CB" },
+    [SchemeHid] = { "#dddddd", NULL, NULL },
+    [SchemeSystray] = { NULL, "#7799AA", NULL },
+    [SchemeUnderline] = { "#7799AA", NULL, NULL }, 
+    [SchemeNormTag] = { "#bbbbbb", "#333333", NULL },
+    [SchemeSelTag] = { "#eeeeee", "#333333", NULL },
+    [SchemeBarEmpty] = { NULL, "#111111", NULL },
 };
-static const unsigned int alphas[][3] = {
-    /* 透明度设置 ColFg, ColBg, ColBorder */
-    [SchemeNorm] = {OPAQUE, baralpha, borderalpha},
-    [SchemeSel] = {OPAQUE, baralpha, borderalpha},
-    [SchemeSelGlobal] = {OPAQUE, baralpha, borderalpha},
+static const unsigned int alphas[][3]    = {          /* 透明度设置 ColFg, ColBg, ColBorder */ 
+    [SchemeNorm] = { OPAQUE, baralpha, borderalpha }, 
+    [SchemeSel] = { OPAQUE, baralpha, borderalpha },
+    [SchemeSelGlobal] = { OPAQUE, baralpha, borderalpha },
+    [SchemeNormTag] = { OPAQUE, baralpha, borderalpha }, 
+    [SchemeSelTag] = { OPAQUE, baralpha, borderalpha },
+    [SchemeBarEmpty] = { NULL, 0xa0a, NULL },
+    [SchemeStatusText] = { OPAQUE, 0x88, NULL },
 };
 
 /* 自定义脚本位置 */
 static const char *autostartscript = "~/scripts/autostart.sh";
 static const char *statusbarscript = "$DWM/statusbar/statusbar.sh";
 
+/* 自定义 scratchpad instance */
+static const char scratchpadname[] = "scratchpad";
+
 /* 自定义tag名称 */
 /* 自定义特定实例的显示状态 */
-//            ﮸ 
-static const char *tags[] = {"", "", "", "", "", "",   "",
-                             "", "", "", "", "ﬄ", "﬐", ""};
+//            ﮸  ﭮ 切
+// 对应的tag序号以及快捷键:   0:1  1:2  2:3  3:4  4:5  5:9  6:c  7:m  8:0  9:w 10:l
+static const char *tags[] = { "", "", "", "", "", "", "", "", "ﬄ", "﬐", "" };
 static const Rule rules[] = {
-    /* class                 instance              title             tags mask
-       isfloating  isglobal    isnoborder monitor */
-    {"music", NULL, NULL, 0, 1, 0, 1, -1},
-    {"listen1", NULL, NULL, 0, 1, 0, 1, -1},
-    {NULL, "icalingua", NULL, 1 << 11, 0, 0, 1, -1},
-    {NULL, "wechat.exe", NULL, 1 << 12, 0, 0, 0, -1},
-    {NULL, "wxwork.exe", NULL, 1 << 13, 0, 0, 0, -1},
-    {NULL, NULL, "broken", 0, 1, 0, 0, -1},
-    {NULL, NULL, "图片查看", 0, 1, 0, 0, -1},
-    {NULL, NULL, "图片预览", 0, 1, 0, 0, -1},
-    {NULL, NULL, "crx_", 0, 1, 0, 0, -1},
-    /* {"chrome",               NULL,                 NULL,             1 << 9,
-       0,          0,          0,        -1 }, */
-    /* {"Chromium",             NULL,                 NULL,             1 << 9,
-       0,          0,          0,        -1 }, */
-    {"flameshot", NULL, NULL, 0, 1, 0, 0, -1},
-    {"float", NULL, NULL, 0, 1, 0, 0, -1},    // 特殊class client默认浮动
-    {"noborder", NULL, NULL, 0, 1, 0, 1, -1}, // 特殊class client默认无边框
-    {"global", NULL, NULL, 255, 1, 1, 0, -1}, // 特殊class client全局于所有tag
+    /* class                 instance              title             tags mask     isfloating  isglobal    isnoborder monitor */
+    {"obs",                  NULL,                 NULL,             1 << 5,       0,          0,          0,        -1 },
+    {"chrome",               NULL,                 NULL,             1 << 6,       0,          0,          0,        -1 },
+    {"Chromium",             NULL,                 NULL,             1 << 6,       0,          0,          0,        -1 },
+    {"music",                NULL,                 NULL,             1 << 7,       1,          0,          1,        -1 },
+    { NULL,                 "qq",                  NULL,             1 << 8,       0,          0,          1,        -1 },
+    { NULL,                 "wechat.exe",          NULL,             1 << 9,       0,          0,          0,        -1 },
+    { NULL,                 "wxwork.exe",          NULL,             1 << 10,      0,          0,          0,        -1 },
+    { NULL,                  NULL,                "broken",          0,            1,          0,          0,        -1 },
+    { "图片查看",           "图片查看",           "图片查看",        0,            1,          0,          0,        -1 },
+    { "图片预览",           "图片预览",           "图片预览",        0,            1,          0,          0,        -1 },
+    { NULL,                  NULL,                "crx_",            0,            1,          0,          0,        -1 },
+    {"flameshot",            NULL,                 NULL,             0,            1,          0,          0,        -1 },
+    {"wemeetapp",            NULL,                 NULL,             TAGMASK,      1,          1,          0,        -1 }, // 腾讯会议在切换tag时有诡异bug导致退出 变成global来规避该问题
+    {"float",                NULL,                 NULL,             0,            1,          0,          0,        -1 }, // 特殊class client默认浮动
+    {"noborder",             NULL,                 NULL,             0,            1,          0,          1,        -1 }, // 特殊class client默认无边框
+    {"global",               NULL,                 NULL,             TAGMASK,      1,          1,          0,        -1 }, // 特殊class client全局于所有tag
 };
 static const char *overviewtag = "OVERVIEW";
-static const Layout overviewlayout = {"", overview};
+static const Layout overviewlayout = { "舘",  overview };
 
 /* 自定义布局 */
 static const Layout layouts[] = {
@@ -83,10 +88,10 @@ static const Layout layouts[] = {
     .v = (const char *[]) { "/bin/sh", "-c", cmd, NULL }                       \
   }
 #define MODKEY Mod4Mask
-#define TAGKEYS(KEY, TAG, cmd1, cmd2)                                          \
-  {MODKEY, KEY, view, {.ui = 1 << TAG, .v = cmd1}},                            \
-      {MODKEY | ShiftMask, KEY, tag, {.ui = 1 << TAG, .v = cmd2}},             \
-      {MODKEY | ControlMask, KEY, toggleview, {.ui = 1 << TAG}},
+#define TAGKEYS(KEY, TAG, cmd) \
+    { MODKEY,              KEY, view,       {.ui = 1 << TAG, .v = cmd} }, \
+    { MODKEY|ShiftMask,    KEY, tag,        {.ui = 1 << TAG} }, \
+    { MODKEY|ControlMask,  KEY, toggleview, {.ui = 1 << TAG} }, \
 
 static const char *termcmd[] = {"alacritty", NULL};
 static const char *browsercmd[] = {"google-chrome-stable",
@@ -302,78 +307,43 @@ static Key keys[] = {
     /* { ShiftMask|ControlMask, XK_c,          spawn,            SHCMD("xclip -o
        | xclip -selection c") }, */
 
-    /* super key : 跳转到对应tag */
+    /* super key : 跳转到对应tag (可附加一条命令 若目标目录无窗口，则执行该命令) */
     /* super shift key : 将聚焦窗口移动到对应tag */
-    /* 若跳转后的tag无窗口且附加了cmd1或者cmd2就执行对应的cmd */
-    /* key tag cmd1 cmd2 */
-    TAGKEYS(XK_1, 0, 0, 0) TAGKEYS(XK_2, 1, 0, 0) TAGKEYS(XK_3, 2, 0, 0)
-        TAGKEYS(XK_4, 3, 0, 0) TAGKEYS(XK_5, 4, 0, 0) TAGKEYS(XK_6, 5, 0, 0)
-            TAGKEYS(XK_7, 6, 0, 0) TAGKEYS(XK_8, 7, 0, 0) TAGKEYS(XK_9, 8, 0, 0)
-    /* TAGKEYS(XK_c, 9,  "~/scripts/app-starter.sh chrome",
-       "~/scripts/app-starter.sh chrome") */
-    /* TAGKEYS(XK_m, 10, "~/scripts/app-starter.sh music", */
-    /*         "~/scripts/app-starter.sh pavucontrol") */
-    /* TAGKEYS(XK_m, 10, 0, 0) */
-    /* TAGKEYS(XK_0, 11, "~/scripts/app-starter.sh tim",
-       "~/scripts/app-starter.sh tim") */
-    /* TAGKEYS(XK_w, 12, "~/scripts/app-starter.sh wechat",
-       "~/scripts/app-starter.sh wechat") */
-    /* TAGKEYS(XK_l, 13, "~/scripts/app-starter.sh wxwork",
-       "~/scripts/app-starter.sh wxwork") */
+    /* key tag cmd */
+    TAGKEYS(XK_1, 0,  0)
+    TAGKEYS(XK_2, 1,  0)
+    TAGKEYS(XK_3, 2,  0)
+    TAGKEYS(XK_4, 3,  0)
+    TAGKEYS(XK_5, 4,  0)
+    TAGKEYS(XK_9, 5,  "obs")
+    TAGKEYS(XK_c, 6,  "google-chrome-stable")
+    TAGKEYS(XK_m, 7,  "~/scripts/music_player.sh")
+    TAGKEYS(XK_0, 8,  "linuxqq")
+    TAGKEYS(XK_w, 9,  "/opt/apps/com.qq.weixin.deepin/files/run.sh")
+    TAGKEYS(XK_l, 10, "/opt/apps/com.qq.weixin.work.deepin/files/run.sh")
 };
 static Button buttons[] = {
-    /* click               event mask       button            function argument
-     */
-    {ClkStatusText, 0, Button1, spawn,
-     SHCMD("~/scripts/app-starter.sh fst")}, // 左键        |  点击状态栏   |
-                                             // 打开float st
-    {ClkWinTitle,
-     0,
-     Button1,
-     hideotherwins,
-     {0}}, // 左键        |  点击标题     |  隐藏其他窗口仅保留该窗口
-    {ClkWinTitle,
-     0,
-     Button3,
-     togglewin,
-     {0}}, // 右键        |  点击标题     |  切换窗口显示状态
-    {ClkStatusText,
-     0,
-     Button1,
-     clickstatusbar,
-     {0}}, // 左键        |  点击状态栏   |  根据状态栏的信号执行
-           // ~/scripts/dwmstatusbar.sh $signal L
-    {ClkStatusText,
-     0,
-     Button2,
-     clickstatusbar,
-     {0}}, // 中键        |  点击状态栏   |  根据状态栏的信号执行
-           // ~/scripts/dwmstatusbar.sh $signal M
-    {ClkStatusText,
-     0,
-     Button3,
-     clickstatusbar,
-     {0}}, // 右键        |  点击状态栏   |  根据状态栏的信号执行
-           // ~/scripts/dwmstatusbar.sh $signal R
-    {ClkTagBar, 0, Button1, view, {0}}, // 左键        |  点击tag      | 切换tag
-    {ClkTagBar,
-     0,
-     Button3,
-     toggleview,
-     {0}}, // 右键        |  点击tag      |  切换是否显示tag
-    {ClkClientWin,
-     MODKEY,
-     Button1,
-     movemouse,
-     {0}}, // super+左键  |  拖拽窗口     |  拖拽窗口
-    {ClkClientWin,
-     MODKEY,
-     Button3,
-     resizemouse,
-     {0}}, // super+右键  |  拖拽窗口     |  改变窗口大小
-    {ClkTagBar,
-     MODKEY,
-     Button1,
-     tag,
-     {0}}, // super+左键  |  点击tag      |  将窗口移动到对应tag
+    /* click               event mask       button            function       argument  */
+    /* 点击窗口标题栏操作 */
+    { ClkWinTitle,         0,               Button1,          hideotherwins, {0} },                                   // 左键        |  点击标题     |  隐藏其他窗口仅保留该窗口
+    { ClkWinTitle,         0,               Button3,          togglewin,     {0} },                                   // 右键        |  点击标题     |  切换窗口显示状态
+    /* 点击窗口操作 */
+    { ClkClientWin,        MODKEY,          Button1,          movemouse,     {0} },                                   // super+左键  |  拖拽窗口     |  拖拽窗口
+    { ClkClientWin,        MODKEY,          Button3,          resizemouse,   {0} },                                   // super+右键  |  拖拽窗口     |  改变窗口大小
+    /* 点击tag操作 */
+    { ClkTagBar,           0,               Button1,          view,          {0} },                                   // 左键        |  点击tag      |  切换tag
+	{ ClkTagBar,           0,               Button3,          toggleview,    {0} },                                   // 右键        |  点击tag      |  切换是否显示tag
+    { ClkTagBar,           MODKEY,          Button1,          tag,           {0} },                                   // super+左键  |  点击tag      |  将窗口移动到对应tag
+    { ClkTagBar,           0,               Button4,          viewtoleft,    {0} },                                   // 鼠标滚轮上  |  tag          |  向前切换tag
+	{ ClkTagBar,           0,               Button5,          viewtoright,   {0} },                                   // 鼠标滚轮下  |  tag          |  向后切换tag
+    /* 点击状态栏操作 */
+    { ClkStatusText,       0,               Button1,          clickstatusbar,{0} },                                   // 左键        |  点击状态栏   |  根据状态栏的信号执行 ~/scripts/dwmstatusbar.sh $signal L
+    { ClkStatusText,       0,               Button2,          clickstatusbar,{0} },                                   // 中键        |  点击状态栏   |  根据状态栏的信号执行 ~/scripts/dwmstatusbar.sh $signal M
+    { ClkStatusText,       0,               Button3,          clickstatusbar,{0} },                                   // 右键        |  点击状态栏   |  根据状态栏的信号执行 ~/scripts/dwmstatusbar.sh $signal R
+    { ClkStatusText,       0,               Button4,          clickstatusbar,{0} },                                   // 鼠标滚轮上  |  状态栏       |  根据状态栏的信号执行 ~/scripts/dwmstatusbar.sh $signal U
+    { ClkStatusText,       0,               Button5,          clickstatusbar,{0} },                                   // 鼠标滚轮下  |  状态栏       |  根据状态栏的信号执行 ~/scripts/dwmstatusbar.sh $signal D
+                                                                                                                      //
+    /* 点击bar空白处 */
+    { ClkBarEmpty,         0,               Button1,          spawn, SHCMD("~/scripts/call_rofi.sh window") },        // 左键        |  bar空白处    |  rofi 执行 window
+    { ClkBarEmpty,         0,               Button3,          spawn, SHCMD("~/scripts/call_rofi.sh drun") },          // 右键        |  bar空白处    |  rofi 执行 drun
 };

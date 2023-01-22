@@ -4,8 +4,8 @@
 source ~/.profile
 
 this=_bat
-s2d_reset="^d^"
-color="^c#2D1B46^^b#4E5173^"
+icon_color="^c#3B001B^^b#4865660x88^"
+text_color="^c#3B001B^^b#4865660x99^"
 signal=$(echo "^s$this^" | sed 's/_//')
 
 update() {
@@ -26,16 +26,31 @@ update() {
     elif [ "$bat_text" -ge 2 ]; then bat_icon="";
     else bat_icon="" bat_pct=""; fi
 
-    bat_icon=$charge_icon$bat_icon
+    icon=" $bat_icon "
+    text=" $bat_text% "
 
-    text=" $bat_icon $bat_pct "
     sed -i '/^export '$this'=.*$/d' $DWM/statusbar/temp
-    printf "export %s='%s%s%s%s'\n" $this "$color" "$signal" "$text" "$s2d_reset" >> $DWM/statusbar/temp
+    printf "export %s='%s%s%s%s%s'\n" $this "$signal" "$icon_color" "$icon" "$text_color" "$text" >> $DWM/statusbar/temp
 }
 
-click() { :; }
+notify() {
+    update
+    _status="状态: $(acpi | sed 's/^Battery 0: //g' | awk -F ',' '{print $1}')"
+    _remaining="剩余: $(acpi | sed 's/^Battery 0: //g' | awk -F ',' '{print $2}' | sed 's/^[ ]//g')"
+    _time="可用时间: $(acpi | sed 's/^Battery 0: //g' | awk -F ',' '{print $3}' | sed 's/^[ ]//g' | awk '{print $1}')"
+    [ "$_time" = "可用时间: " ] && _time=""
+    notify-send "$bat_icon Battery" "\n$_status\n$_remaining\n$_time" -r 9527
+}
+
+click() {
+    case "$1" in
+        L) notify ;;
+        R) killall xfce4-power-manager-settings || xfce4-power-manager-settings & ;;
+    esac
+}
 
 case "$1" in
     click) click $2 ;;
+    notify) notify ;;
     *) update ;;
 esac

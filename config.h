@@ -58,12 +58,12 @@ static const char *tags[] = { "", "", "", "", "", "", "", "
 static const Rule rules[] = {
     /* class                 instance              title             tags mask     isfloating  isglobal    isnoborder monitor */
     {"obs",                  NULL,                 NULL,             1 << 5,       0,          0,          0,        -1 },
-    {"chrome",               NULL,                 NULL,             1 << 6,       0,          0,          0,        -1 },
-    {"Chromium",             NULL,                 NULL,             1 << 6,       0,          0,          0,        -1 },
-    {"music",                NULL,                 NULL,             1 << 7,       1,          0,          1,        -1 },
-    { NULL,                 "qq",                  NULL,             1 << 8,       0,          0,          1,        -1 },
-    { NULL,                 "wechat.exe",          NULL,             1 << 9,       0,          0,          0,        -1 },
-    { NULL,                 "wxwork.exe",          NULL,             1 << 10,      0,          0,          0,        -1 },
+    /* {"chrome",               NULL,                 NULL,             1 << 6,       0,          0,          0,        -1 }, */
+    /* {"Chromium",             NULL,                 NULL,             1 << 6,       0,          0,          0,        -1 }, */
+    /* {"music",                NULL,                 NULL,             1 << 7,       1,          0,          1,        -1 }, */
+    /* { NULL,                 "qq",                  NULL,             1 << 8,       0,          0,          1,        -1 }, */
+    /* { NULL,                 "wechat.exe",          NULL,             1 << 9,       0,          0,          0,        -1 }, */
+    /* { NULL,                 "wxwork.exe",          NULL,             1 << 10,      0,          0,          0,        -1 }, */
     { NULL,                  NULL,                "broken",          0,            1,          0,          0,        -1 },
     { "图片查看",           "图片查看",           "图片查看",        0,            1,          0,          0,        -1 },
     { "图片预览",           "图片预览",           "图片预览",        0,            1,          0,          0,        -1 },
@@ -272,7 +272,8 @@ static Key keys[] = {
     /* spawn + SHCMD 执行对应命令 */
     /* { MODKEY|ShiftMask,    XK_q,            spawn,
        SHCMD("~/scripts/app-starter.sh killw") }, */
-    {MODKEY, XK_apostrophe, spawn, SHCMD("~/scripts/floatterm.sh")},
+    /* {MODKEY, XK_apostrophe, spawn, SHCMD("~/scripts/floatterm.sh")}, */
+    {MODKEY, XK_apostrophe, togglescratch, SHCMD("~/scripts/floatterm.sh")},
     /* { MODKEY,              XK_Return,       spawn,
        SHCMD("~/scripts/app-starter.sh st") }, */
     {MODKEY, XK_Return, spawn, {.v = termcmd}},
@@ -315,12 +316,13 @@ static Key keys[] = {
     TAGKEYS(XK_3, 2,  0)
     TAGKEYS(XK_4, 3,  0)
     TAGKEYS(XK_5, 4,  0)
-    TAGKEYS(XK_9, 5,  "obs")
-    TAGKEYS(XK_c, 6,  "google-chrome-stable")
-    TAGKEYS(XK_m, 7,  "~/scripts/music_player.sh")
-    TAGKEYS(XK_0, 8,  "linuxqq")
-    TAGKEYS(XK_w, 9,  "/opt/apps/com.qq.weixin.deepin/files/run.sh")
-    TAGKEYS(XK_l, 10, "/opt/apps/com.qq.weixin.work.deepin/files/run.sh")
+    TAGKEYS(XK_6, 5,  0)
+    /* TAGKEYS(XK_9, 5,  "obs") */
+    /* TAGKEYS(XK_c, 6,  "google-chrome-stable") */
+    /* TAGKEYS(XK_m, 7,  "~/scripts/music_player.sh") */
+    /* TAGKEYS(XK_0, 8,  "linuxqq") */
+    /* TAGKEYS(XK_w, 9,  "/opt/apps/com.qq.weixin.deepin/files/run.sh") */
+    /* TAGKEYS(XK_l, 10, "/opt/apps/com.qq.weixin.work.deepin/files/run.sh") */
 };
 static Button buttons[] = {
     /* click               event mask       button            function       argument  */

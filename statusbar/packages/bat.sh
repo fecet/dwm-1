@@ -26,7 +26,7 @@ update() {
     elif [ "$bat_text" -ge 2 ]; then bat_icon="";
     else bat_icon="" bat_pct=""; fi
 
-    icon=" $bat_icon "
+    icon=" $charge_icon$bat_icon "
     text=" $bat_text% "
 
     sed -i '/^export '$this'=.*$/d' $DWM/statusbar/temp

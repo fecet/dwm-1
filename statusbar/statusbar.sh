@@ -29,10 +29,10 @@ cron() {
     let i=0
     while true; do
         to=()                                                            # 存放本次需要更新的模块
-        [ $((i % 10)) -eq 0 ]  && to=(${to[@]} wifi)                     # 每 10秒  更新 wifi
-        [ $((i % 20)) -eq 0 ]  && to=(${to[@]} cpu mem vol icons)        # 每 20秒  更新 cpu mem vol icons
-        [ $((i % 300)) -eq 0 ] && to=(${to[@]} bat)                      # 每 300秒 更新 bat
-        [ $((i % 5)) -eq 0 ]   && to=(${to[@]} date)                     # 每 5秒   更新 date
+        [ $((i % 60)) -eq 0 ]  && to=(${to[@]} wifi)                     # 每 10秒  更新 wifi
+        [ $((i % 10)) -eq 0 ]  && to=(${to[@]} cpu mem vol icons)        # 每 20秒  更新 cpu mem vol icons
+        [ $((i % 10)) -eq 0 ] && to=(${to[@]} bat)                      # 每 300秒 更新 bat
+        [ $((i % 20)) -eq 0 ]   && to=(${to[@]} date)                     # 每 5秒   更新 date
         update ${to[@]}                                                  # 将需要更新的模块传递给 update
         sleep 5; let i+=5
     done &

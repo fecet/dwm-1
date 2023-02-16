@@ -61,7 +61,7 @@ static const Rule rules[] = {
     /* {"chrome",               NULL,                 NULL,             1 << 6,       0,          0,          0,        -1 }, */
     /* {"Chromium",             NULL,                 NULL,             1 << 6,       0,          0,          0,        -1 }, */
     /* {"music",                NULL,                 NULL,             1 << 7,       1,          0,          1,        -1 }, */
-    /* { NULL,                 "qq",                  NULL,             1 << 8,       0,          0,          1,        -1 }, */
+    { NULL,                 "qq",                  NULL,             1 << 8,       0,          0,          1,        -1 },
     /* { NULL,                 "wechat.exe",          NULL,             1 << 9,       0,          0,          0,        -1 }, */
     /* { NULL,                 "wxwork.exe",          NULL,             1 << 10,      0,          0,          0,        -1 }, */
     { NULL,                  NULL,                "broken",          0,            1,          0,          0,        -1 },
@@ -320,7 +320,7 @@ static Key keys[] = {
     /* TAGKEYS(XK_9, 5,  "obs") */
     /* TAGKEYS(XK_c, 6,  "google-chrome-stable") */
     /* TAGKEYS(XK_m, 7,  "~/scripts/music_player.sh") */
-    /* TAGKEYS(XK_0, 8,  "linuxqq") */
+    TAGKEYS(XK_0, 8,  "linuxqq")
     /* TAGKEYS(XK_w, 9,  "/opt/apps/com.qq.weixin.deepin/files/run.sh") */
     /* TAGKEYS(XK_l, 10, "/opt/apps/com.qq.weixin.work.deepin/files/run.sh") */
 };

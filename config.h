@@ -94,7 +94,7 @@ static const Layout layouts[] = {
     { MODKEY|ControlMask,  KEY, toggleview, {.ui = 1 << TAG} }, \
 
 static const char *termcmd[] = {"alacritty", NULL};
-static const char *browsercmd[] = {"google-chrome-stable",
+static const char *browsercmd[] = {"microsoft-edge-dev",
                                    /* "--proxy-server=127.0.0.1:7890", */
                                    /* "--force-device-scale-factor=1.7",  */
                                    NULL};
